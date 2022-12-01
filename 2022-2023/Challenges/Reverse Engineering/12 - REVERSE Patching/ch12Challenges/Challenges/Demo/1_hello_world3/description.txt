@@ -1,0 +1,1 @@
+The program will show the expected password read from a file. The goal of the exercise is to patch the binary to reach the flag when a wrong password is used.
