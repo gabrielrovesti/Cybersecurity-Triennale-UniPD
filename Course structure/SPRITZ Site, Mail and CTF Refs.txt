@@ -1,0 +1,10 @@
+https://github.com/SPRITZ-Research-Group
+https://spritz.math.unipd.it/spritzers.html
+https://www.math.unipd.it/~conti/teaching/CPP2223/index.html
+
+Always write to prof. Conti and the year's course assistants together,
+so the first will text back.
+Conti's mail: conti@math.unipd.it
+
+For more challenges, they advice this site:
+https://picoctf.org

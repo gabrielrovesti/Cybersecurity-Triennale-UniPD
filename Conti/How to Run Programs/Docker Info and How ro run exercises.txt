@@ -1,0 +1,43 @@
+Come usare Docker su Windows
+
+Indicazioni di massima dal link:
+https://linuxhint.com/run-sh-file-windows/ 
+
+•	Attivare la modalità Sviluppatori di Windows
+•	Installare tra le funzionalità aggiuntive Windows Subsystem for Linux e spuntare su ON
+•	Installare Ubuntu da Windows Store (es. versione 22.02)
+•	Installare Docker Desktop
+•	Attivare la CLI di Linux con il comando "bash"
+(Non serve attivare sudo dockerd in quanto Docker Desktop attiva già il daemon di per sé)
+•	sudo chmod -R +rx ./
+•	sudo docker_run.sh
+•	sudo docker_build.sh
+
+Come usare Docker su Ubuntu
+•	sudo apt update
+•	sudo apt install apt-transport-https ca-certificates curl software-properties-common
+•	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add –
+•	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+•	sudo apt install docker-ce
+
+Come usare Docker Compose su Windows/Ubuntu
+(Avendo attivato Linux Subsystem e dopo aver installato Ubuntu)
+Indicazioni di massima dal link:
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04 
+
+•	sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+•	sudo chmod +x /usr/local/bin/docker-compose
+•	docker-compose --version
+•	(Spostandosi nella cartella di interesse)
+•	docker-compose up
+
+Indicazioni in ordine per avviare gli esercizi:
+-	chmod -R +rx ./ (imposta il permesso di lettura ed esecuzione, includendo tutte le sottodirectory con -R, che significa Recursive [dentro tutte le sottocartelle] partendo dal percorso attuale, qualunque esso sia, con ./)
+-	In un’altra finestra di terminale (diversa da quella dei successivi comandi)  sudo dockerd
+In questo modo, si attiva il daemon di Docker. Deve rimanere aperta questa finestra.
+(Basta farlo una volta sola, resta attivo dopo)
+-	sudo ./docker_build.sh
+-	sudo ./docker_run.sh (lasciare aperta questa finestra)
+-	Connettersi in un browser all’indirizzo http://127.0.0.1:8085 (attenzione che è http e non https; così per tutti quegli indirizzi localhost come questo)
+o	Se si inserisse come HTTPS, si evidenzi tutto l’indirizzo dalla barra apposita e lo si reincolli nella stessa barra; quando questo accade, è tutto evidenziato in azzurro e, in questo modo, si riesce a scrivere HTTP e non HTTPS
+-	Per vedere i container attivi e scoprirne l’indirizzo IP -> sudo docker ps

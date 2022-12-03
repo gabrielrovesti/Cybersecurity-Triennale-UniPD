@@ -1,0 +1,11 @@
+In questa challenge va compresa pezzo per pezzo la logica del programma inserendo gli input giusti.
+1)	Nel primo livello, avviene una sanitizzazione dell’input (conversione ad intero) e vengono eseguiti dei controlli, assegnando il punteggio. Se uno prova ad inserire una stringa normale oppure un numero, il punteggio rimane sempre 0. 
+Più interessante il ramo eccezione, che esegue uno split nel caso in cui la lunghezza della lista sia 2 ma che abbia “7” come carattere mediano, tra:
+o	L’ultimo elemento del primo elemento della lista
+o	Il primo elemento del secondo elemento della lista
+I rami except ed else sono inutili
+-	Inserendo una stringa che ha 7 come elemento mediano e che può essere spezzata in due parti composta da interi e caratteri, passiamo il primo livello con 4 punti
+2)	Il secondo livello esegue un’altra sanitizzazione della stringa, rimpiazzando banalmente RI con “”, tale che se la stringa sia uguale dopo la sanitizzazione a SPRITZ, allora otteniamo altri 4 punti.
+-	Basterà quindi inserire una stringa del tipo SPRRIITZ, che ha RI nel mezzo e poi fa rimanere RI na volta fatta la sanitizzazione
+
+Flag: COngr4t5!!! SPRITZCTF={webgame202001}

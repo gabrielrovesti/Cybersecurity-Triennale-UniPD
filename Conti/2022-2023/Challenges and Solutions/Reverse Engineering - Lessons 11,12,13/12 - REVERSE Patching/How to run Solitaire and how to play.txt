@@ -1,0 +1,25 @@
+Teoricamente, I comandi per far avviare l’esercizio, dovrebbero essere i seguenti (scaricando la sola cartella dell’esercizio):
+-	sudo apt-get install libncurses5-dev libncursesw5-dev 
+(necessario perchè ttysolitaire dipende da Ncurses)
+-	sudo apt install gcc
+-	sudo apt install make
+-	make
+-	sudo make install
+In generale, per installarlo, potrebbe dare errori sulle dipendenze del file.
+Seguire quindi eventualmente: https://github.com/mpereira/tty-solitaire 
+
+Soluzione che ho trovato io per farlo andare:
+-	git clone https://github.com/mpereira/tty-solitaire.git
+-	cd tty-solitaire
+-	sudo make install
+-	ttysolitaire
+
+In IDA, poi, si andrà a provare a patchare il binario dato da questi comandi.
+
+In IDA, poi, si andrà a provare a patchare il binario dato da questi comandi.
+Comandi:
+-	Spazio per avere le carte dal mazzo
+-	Ci si sposta con le frecce, in particolare con le frecce su e giù per spostarsi tra le pile di carte
+-	Quando si ha il puntatore in basso sulla pila di carte, si può scegliere la carta attuale con spazio
+-	Per scegliere più carte sulla pila attuale, premere “m”
+-	Per scegliere meno carte sulla pila attuale, premere “n”

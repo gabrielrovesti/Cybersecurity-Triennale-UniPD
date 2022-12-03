@@ -1,0 +1,13 @@
+Analizzando il file vuln con IDA Freeware è possibile notare che vengono richiesti 3 input essenziali : 
+1) What about giving him a "partner"? [Y]/n  
+2) What do you want to write?
+3) Where do you want to write?
+
+Per il primo input basterà inserire y.
+Si può notare dai input successivi che è possibile utilizzare la tecnica write-what-where per modificare l'esecuzione di una funzione.
+Con IDA è possibile trovare la funzione give_the_man_a_cat che stampa la flag. La funzione give_the_man_a_cat sarà il nostro where.
+Analizzando con IDA per trovare il Where (GOT) da sostiuire con la funzione give_the_man_a_cat troviamo "exit" l'ultima funzione 
+che viene eseguita dal programma.
+
+Procedendo quindi a scrivere il nostro programma in python utilizzando la libreria pwn.
+Eseguendo sol.py si ottiene un immagine contenente la flag : SPRITZ{PaRiPpaPPaA}

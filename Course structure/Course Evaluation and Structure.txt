@@ -1,0 +1,23 @@
+Course Content:
+The course covers the major practical aspects of CyberSecurity. This is a practical course. We present each topic with a theoretical perspective (~30% of the time), followed by a set of exercises (~70% of the time). The exercises are in the format of a Capture The Flag, where the student is asked to solve a puzzle to obtain a secret message (also known as flag). The topics are grouped into four areas.
+Cryptography: ciphers; hash functions; symmetric/asymmetric encryption.
+Web Vulnerabilities: bad programming practices; injections; language vulnerabilities.
+Reverse Engineering: reversing techniques; anti-debug; patching.
+Pawning: buffer overflow; defenses; Return Oriented Programming (ROP) attack; Global Offset Table (GOT) attack.
+For each topic there will be a theoretical and a practical lesson.
+Grading Criteria:
+The exam takes the form of a Capture the Flag , with a set of exercises, selected from all the topics of the course.
+Students can pass the exam also through Intermediary Evaluations: during the course will be provided three practical evaluations (also following the Capture the Flag format), each one covering a different subset of the program topics.
+Alternatively, students can propose/discuss with the lecturer a possible security-related project to be carried out as a final exam.
+
+In short:
+- theory was useful only in 2019/2020, otherwise good to know things but useless for the exam
+- there are only CTFs to do in the lesson, but don't expect anyone to tell you how they are;
+the teacher is there only to make the theory lesson, other than that, only the assistants do stuff
+and help, but still, it's a DIY course
+- one can make it with two partials (the first partial the first two, the other the last two),
+the third is made in case of taking a better mark in one of two parts
+
+The writeups can be written in Italian/English, no matter how.
+The important thing is writing them well enough to convince you know something
+or at least understand what you are doing.

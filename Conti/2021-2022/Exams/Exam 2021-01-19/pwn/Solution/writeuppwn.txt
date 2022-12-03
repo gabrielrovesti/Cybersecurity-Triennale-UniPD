@@ -1,0 +1,17 @@
+========SOLUZIONE TEORICA===============
+Questa pwn si può risolvere facendo in modo che la variabile nella quale viene salvato l'input vada a 
+sovrascrivere il valore della variabile che viene comparata con la stringa "UniPD_0", questo è possibile perchè gli indirizzi di memoria delle variabili sono consecutivi e quella che tiene l'input al suo interno è precedente alla variabile che viene comparata con "UniPD_0"
+
+
+=====SOLUZIONE CON PATCH (NON AMMESSA) ===========
+
+
+
+
+Questa SOLUZIONE si basa sul patchare il programma originale saltando i jump degli if, 
+analizzando il programma si può vedere chiaramente che al primo if il programma andrà sempre a terminare,
+quindi bisogna patchare per evitare che termini, in seguito bisogna patchare il secondo if per fare in modo che entri sempre.
+Un'altra opzione sarebbe quella di fare in modo che la funzione questionario ritorni sempre il valore per passare il secondo if e non entrare nel primo, ho provato la seconda opzione ma risulta in seg fault
+
+Provando la prima opzione ho fatto in modo che saltasse il jne del secondo if, stampando così la flag
+SPRITZ{CPP_PWNs_Everything_173453} ed un bellissimo ringraziamento :)

@@ -1,0 +1,25 @@
+Eseguendo il file sumiti è possibile vedere che sono richiesti certi input per continuare e ottenere la Flag.
+Aprendo il file con IDA Freeware è possibile vedere nel main che :
+- la prima condizione con domanda "We have many customers these days... Did you make a reservation? What's your name?"
+    è possibile superarla inserendo come input : 
+1) input : SumitiLover1234
+
+continuando l'esecuzione viene eseguita la funzione check_sandwitch che accetta come input una stringa lunga 8 e controlla che per ogni carattere della stringa corrisponde al codice ascii. Utilizzando la funzione chr di python e riordinando è possibile ottenere 
+la stringa richiesta
+- print(chr(70),chr(52),chr(110),chr(84),chr(97),chr(53),chr(49),chr(65))
+2) input : F4nTa51A
+
+Infine viene richiesto un pin casuale, usando gdb è possibile creare un breakpoint al momento dell'assegnazione alla variabile panino
+mov     [rbp+var_44], eax
+sul terminale quindi si inseriscano, le seguenti istruzioni :
+    gdb sumiti
+    b * 0x555555555683
+    r
+    SumitiLover1234
+    F4nTa51A
+    print $eax 
+        convertire da hex in decimale (nel mio caso è stato 0x1d38 in decimale 7480)
+    c
+        Inserire il pin
+        quindi ottenere la flag : SPRITZ{TwO_EuRo_PleAs3}
+

@@ -1,0 +1,37 @@
+Indicazioni generali d'uso:
+o	Installare Python -> sudo apt install python3 (per Arch: sudo pacman -S python)
+o	Installare PIP -> sudo apt install python3-pip (per Arch: sudo pacman -S python-pip)
+o	Installare Virtualenv -> sudo pip install virtualenv (per Arch: sudo pacman -S python-virtualenv)
+o	Installare Flask -> sudo pip install flask
+o	Spostarsi all’interno della cartella app una volta unzippata la cartella
+o	Attivare l’environment presente -> source env/bin/activate
+o	Installare i pacchetti con pip inclusi nel file requirements -> pip install -r requirements.txt
+o	Una volta finito di usare il virtualenv, si usa deactivate per uscire
+
+Potrebbe esserci un errore del tipo:
+Cannot import name Container from collections/Cannot import name Container from Mapping
+
+Ciò è dovuto, nel caso si usi Python 3.10, all’uso di un pezzo deprecato all’interno della libreria.
+Sarà quindi necessario Python 3.9.
+
+Su Arch Linux si fa così:
+-	Installare yay  https://www.lffl.org/2021/01/guida-yay-arch-linux-manjaro.html 
+-	Installare Python 3.9  yay python39
+
+Su Ubuntu si fa così:
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.9
+
+Installare pip in versione 3.9
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.9 get-pip.py
+
+Per avviare un esercizio che contiene uno script Flask (es challenge Python Lezione 9):
+-	Crearsi un virtualenv -> virtualenv project
+-	Spostarsi nella cartella project -> cd project
+-	Attivare l’environment presente -> source bin/activate
+-	Spostarsi nella cartella www
+-	Eseguire -> python3.9 -m pip install flask
+-	Eseguire l’applicazione -> FLASK_APP=chall.py python 3.9 -m flask run

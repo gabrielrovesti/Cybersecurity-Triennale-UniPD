@@ -1,0 +1,5 @@
+Can you make the man happy and get the flag? 
+
+You cannot patch this binary. The challenge must be solved by providing appropriate inputs.
+Do not modify the temp file.
+Jumping to the flag with the debugger is NOT a valid solution.

@@ -1,0 +1,5 @@
+Si nota che il testo dato è un insieme di caratteri; si può pensare ad un approccio classico di capire la frequenza facendo una frequency analysis, che qui non serve. Ci sono solo tre caratteri; x,y," ".
+Invece, si può pensare di risolvere il tutto come una vecchia challenge, nello specifico Ultraencoded, che considera una serie di input quasi uguali tra di loro, cioè ZEROONE, ZEROONE, etc.
+
+Quindi, si rimpiazzano “x” ed “y” con zeri ed uni. Notiamo che le stringhe binarie sono di lunghezza diversa, nello specifico 6/7 caratteri. La cosa che hanno tutte in comune è essere stringhe binarie.
+Quindi, usando la funzione chr che prende la posizione del carattere in Unicode e poi eseguendo la conversione in int considerando la base binaria (2), si ottiene la flag. 

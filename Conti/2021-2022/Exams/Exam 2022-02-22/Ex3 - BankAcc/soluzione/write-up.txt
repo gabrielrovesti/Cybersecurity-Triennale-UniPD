@@ -1,0 +1,25 @@
+Per ottenere la flag ci servono 3 cose:
+-username
+-password
+-pin OTP
+
+l'username e' UniPD_Student_01 ed e' visibile in chiaro nel main. 
+
+la password e' contenuta nella funzione check_password. Nella funzione ho notato che c'e' questa coppia di righe:
+call    _strlen
+cmp     rax, 8
+Da qui ho intuito che la password ha 8 caratteri.
+Successivamente c'e' una serie di if e ognuno di loro controlla un carattere diverso nella password. Per sapere l'ordine basta vedere il valore della variabile sommata a rbp. Mettendo in ordine i caratteri, si scopre che la password e': W_SuM1t!
+
+infine per il pin nella consegna e' richiesto che il pin inserito sia sempre il solito. Quindi ho sostituito le istruzioni: 
+
+call    _time
+mov     edi, eax
+call    _srand
+call    _rand
+
+con dei nop. infatti prima viene eseguita l'istruzione
+
+mov     eax, 0
+
+che setta eax a zero. Quindi togliendo le funzioni che creano un pin casuale, il pin sara' sempre: 0000

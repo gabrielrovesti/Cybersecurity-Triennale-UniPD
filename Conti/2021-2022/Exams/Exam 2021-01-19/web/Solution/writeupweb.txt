@@ -1,0 +1,20 @@
+Questa challenge è un minigioco nel quale bisogna capire la logica del programma,
+il primo livello: la logica è molto semplice (includo il codice da me commentato)
+Bisogna lanciare una eccezione all'inizio e quindi inserire qualcosa che non può essere convertito in int
+io prendo una stringa "cia979aic" contenente caratteri non convertibili.
+
+Dentro l'eccezione la stringa viene divisa dal 7 quindi crea il vettore ["cia9","9aic"], 
+il vettore deve essere composto da due elementi, entra nell'if e se l'ultimo elemento del primo
+è uguale ad il primo elemento dell'ultimo allora somma i due (ecco perchè il 9 finale ed iniziale)
+Ho scelto nove proprio perchè alla fine controlla che score > 10 (9+9=18>10) e quindi portiamo a casa i nostri 4 punti dal primo livello
+
+il secondo livello invece è molto semplice, la stringa viene "sanata" rimuovendo un RI dalla stringa, quindi
+mettendo come input SPRITZ => SPITZ, per ovviare a ciò basta aggiungere un secondo RI dentro il primo
+quindi SPRRIITZ => SPRITZ e portiamo a casa i nostri 4 punti dal secondo livello
+
+con questi 8 punti abbiamo superato questa challenge, riassumento input usati
+
+"cia979aic"
+SPRIRITZ
+
+ed ecco qui la nostra amata flag COngr4t5!!! SPRITZCTF={webgame202001}

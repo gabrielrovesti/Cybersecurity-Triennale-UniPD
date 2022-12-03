@@ -1,0 +1,15 @@
+Il nome utente è facilmente trovabile in chiaro "UniPD_Student"
+La password è offuscata ma la si può ricavare dal check nella funzione checkPassword,
+password deve essere di lunghezza 8. 
+Vediamo che nell'input viene passato l'indirizzo della prima variabile (nel mio caso chiamata local_28) e che quindi la parola va ad essere assegnata nelle altre variabili, bisogna seguire l'ordine delle dichiarazioni delle variabili per scoprire l'ordine dei caratteri negli if
+
+
+quindi gP01o3!v => P10v3go!
+
+Pl0v3go!
+
+In seguito viene richiesto una otp, esso è creato randomizzato con il tempo e viene effettuato il mod 9999, in modo da fare un sanitize del random, questo non è rompibile, dobbiamo cercare da altre parti.
+
+otp viene salvato in una variabile dichiarata subito dopo quella utilizzata per l'input, pensavo di poter sovrascrivere il risultato del otp (visto che l'input viene preso dopo la generazione dell'otp) ma uint richiede un numero troppo grande per poter passare da una variabile ad un'altra.
+
+Una soluzione possibile sarebbe quella di analizzare la memoria quando richiede l'input, dato che la generazione è già stata effettuata una analisi della memoria ci porterebbe a leggere l'otp e dato che non c'è nessun timer con fallimento automatico questa operazione la si può effettuare con calma

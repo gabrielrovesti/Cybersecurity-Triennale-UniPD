@@ -1,0 +1,4 @@
+Attenzione: Il file ELF è in 32 bit e, magari, la propria architettura è a 64 bit. L’errore, nello specifico, è 
+No such file or directory. Nel dettaglio:
+-	In Arch Linux, basta installare le librerie a 32-bit con sudo pacman -S lib32-glibc, impostare il file come eseguibile (questo descritto sopra) e poi scrivere ./funmail
+-	In Ubuntu, seguire il link: https://askubuntu.com/questions/454253/how-to-run-32-bit-app-in-ubuntu-64-bit 

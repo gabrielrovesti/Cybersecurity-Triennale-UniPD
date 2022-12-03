@@ -1,0 +1,20 @@
+Per prima cosa ho voluto sfruttare una vulnerabilità che è unica a questo tipo di sfida, ovvero
+che la parola spritz è sempre all'inizio, perciò ho tradotto i primi 5 blocchi in S,P, etc
+avendo fatto ciò ho notato che anche l'8 blocco si è trasformato in T, rivelandomi che la parola è
+SPRITZCTF, armato di questa conoscenza ho provato a vedere la ripetizione delle lettere, questo mi 
+poteva portare a costruire l'alfabeto con le occorrenze ma ho ottenuto
+{'yxyxxyy': 0, 'yxyxxxx': 0, 'yxyxxyx': 0, 'yxxyxxy': 0, 'yxyxyxx': 1, 'yxyyxyx': 0, 'yxxxxyy': 0, 'yxxxyyx': 0, 'yyyyxy': 0, 'yyyyxyy': 0, 'yyxxyxy': 0, 'yyxyyyx': 1, 'yyxxxyy': 0, 'yyyxxyx': 0, 'yyyyxxy': 0, 'yyyxxxx': 0, 'yyyxyxx': 0, 'yyxyxxy': 0, 'yyxyyyy': 0, 'yyxxxx': 4, 'yyxxxy': 0, 'yyyyyxy': 0}
+
+o in formato più leggibile
+{0: 0, 1: 0, 2: 0, 3: 0, 4: 1, 5: 0, 6: 0, 7: 1, 8: 0, 9: 0, 10: 0, 11: 0, 12: 1, 13: 0, 14: 0, 15: 0, 16: 0, 17: 0, 18: 0, 19: 0, 20: 1, 21: 4, 22: 4, 23: 4, 24: 4, 25: 4, 26: 0, 27: 0}
+
+una conoscenza che non mi porta sviluppi ulteriori, strada buona ma da abbandonare
+
+Ho provato a vedere y = 0 x = 1 e viceversa dividendo in blocchi ED ECCO LA SOLUZIONE!
+
+In blocchi da 5 (come proposti ed avendo y= 1 ed x = 0) si ottiene l'ascii binario, si converte in int
+dopo in char e si hanno le lettere!
+
+Completato stringa trovata = SPRITZCTF={encryption000001}
+
+(per più chiarezza guardare script, non è commentato ma la parte dal commenti in giu è la sol finale)
