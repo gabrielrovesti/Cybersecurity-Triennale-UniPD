@@ -1,0 +1,235 @@
+Rendere interattivi gli eseguibili:
+- Tasto destro - Mettere la spunta su "Eseguibile"
+- chmod +x nomefile
+
+IDA
+- Premere F5 e interpretazione pseudocodice
+
+Installazione GDB-PEDA:
+git clone https://github.com/longld/peda.git ~/peda
+echo "source ~/peda/peda.py" >> ~/.gdbinit
+Avviare un programma qualsiasi con gdb e si vede il prompt iniziare con gdb-peda
+
+GDB (con gdb-peda)
+    gdb nomefile                       /per aprire il file
+    run                                /per avviare il programma
+    breakpoint/b* funzione o indirizzo /imposta il breakpoint in un punto preciso
+    delete/d funzione o indirizzo      /cancella il breakpoint in un punto preciso
+    delete                             /cancella tutti i breakpoint
+    bt                                 /backtrace mostra le chiamate fatte finora dal programma
+    br *0xBD o br main                 /mette breakpoint su l indirizzo HEX passato
+    c                                  /continua l'esecuzione dal breakpoint in poi
+    jump printflag                     /salta alla funzione richiesta need br and run
+    clear main                         /toglie i breakpoint dalla funzione indicata
+    info registers (oppure i r)        /mostra i registri
+    info variables                     /mostra variabili
+    info locals                        /lista variabili locali
+    info breakpoints                   /lista tutti i breakpoint
+    printf "%s", (char *) flag_buf 
+    oppure 
+    x/s (char *) flag_buf              /stampa una variabile come stringa
+    disassemble bash                   /mostra assembly della funzione
+    c                                  /continua dopo br
+    x/200bx $esp                       /mostra la stack, se non c'è esp usa rsp
+    r < a                              /da come input il file a (da usare con cyclic)
+    r < $(python -c "print('A'*50)")   /da come input il risultato dello script
+    set disassembly-flavor             /spesso usato per impostare la visualizzazione delle variabili
+    
+    pattern_create lunghezza file      /imposta un file con una stringa di lunghezza impostata; utile per trovare l'offset dello stack
+    run < nome_file_pattern            /esegue il file inserendo come input la stringa del pattern
+    (questo da eseguire dopo il run; si è all'interno dell'esecuzione del programma)
+    pattern_search                     /trova l'occorrenza del pattern nella memoria
+
+    Esempio di output:
+    "Register container pattern buffer:
+    EBP+0 found at offset: 136 
+    EIP+0 found at offset: 140 -> fine pattern (offset di 140)
+    oppure -> RBP+0 found at offset: 32 (offset di 32+8, per riallocazione indirizzo)
+
+    Register point to pattern buffer:
+    [ESP] --> offset 144 - size ~156
+    Pattern buffer found at: 
+    (stack)
+    References to pattern buffer found at:
+    (stack)"
+
+    shellcode generate                 /genera una serie di opzioni per la shellcode
+    (esempio di utilizzo)
+    shellcode generate x86/linux exec
+
+    print (p) (variabile)              /stampa contenuti variabile
+    q                                  /necessario per uscire dal debugger
+
+Comandi utili
+    strings                            /mostra funzioni
+    file nome                          /mostra architettura (Ex:intel 80386) 
+    pwn cyclic 100 > a                 /crea un pattern lungo 100 dentro al file a
+    objdump -d file                    /mostra tutto il dump del codice
+    ltrace -f file                     /mostra chiamate di sistema
+    strace -f file                     /alternativo al precedente con stesso scopo
+    grep -r --text 'picoCTF{.*}'       /trovare testo ricorsivamente
+    egrep -r --text 'picoCTF{.*?}      /alternativo al precedente con stesso scopo ma vede anche regex (espressioni regolari)
+    readelf -s filebinario             /permette di vedere simboli e funzioni
+
+Checksec (controlla livello di sicurezza del file)
+    checksec --file=./binario
+
+    pwn checksec nomefile              /simile al comando file ma da piu dettagli sull' eseguibile
+    -Outputs di Checksec
+    1- Architettura file
+    2- RELRO                          /Relocation Read-Only (tecnica di mitigazione sui file binari)
+        - Partial RERO                /parte della GOT (Global Offset Table, caricamento dinamico indirizzi) è di sola lettura
+        - Full RERO                   /tutta la GOT è in sola lettura
+    
+    3- CANARY                         /Controllo sul return della funzione chiamata che si accerta che riporti alla funzione precedente
+    4- NX                             /Non-Executable La stack non è eseguibile
+    5- PIE                            /Position Independent Executable Indirizzi shiftati di uno stesso offset comune
+    
+    Fonti:                             https://blog.siphos.be/2011/07/high-level-explanation-on-some-binary-executable-security/
+
+Installazione di Radare2 Ubuntu aggiornata al 2022:
+-	git clone https://github.com/radareorg/radare2
+-	cd radare2/sys
+-	chmod +x install.sh
+-	sh install.sh
+
+
+Radare2
+    r2 file                            /apre file
+    aaaa                               /inizializza
+    afl                                /mostra indirizzi funzioni e lista tutte le funzioni
+    pdf; agf                           /mostra la funzione e mostra un grafico per il control flow
+    px 32                              /stampa dump a 32 byte 
+    f~foo                              /filtra le flag come grep 
+    iS;is                              /lista sezioni e simboli
+    iz                                 /stringhe sezione dati
+    rabin2                             /lista le dipendenze dirette del file 
+    pd 1 @ (funzione)                  /stampa indirizzo comando
+    s main                             /salta al main
+    pdf @ main                         /mostra il main disassemblato
+    pdc                                /mostra la funzione in cui sei decompilata con radare
+    pdg                                /mostra la funzione in cui sei decompilata con ghidra SERVE rdghidra
+    v                                  /entra in visual mode
+    oo+                                /entra in modalità scrittura
+    wa                                 /scrive un indirizzo
+    db                                 /debugger breakpoint
+    (per metterlo) db main; (per toglierlo) dbd/dbe
+    dc                                 /esegue istruzioni nel file 
+    dr                                 /mostra i registri della CPU
+
+    rabin2                             /dà molte informazioni sul file binario
+    (esempio d'uso) -> rabin2 -i file 
+
+    q                                  /quit
+
+Uso del package manager di Radare2 (es. installazione Ghidra per decompilare il codice in linea)
+-	r2pm update
+-	r2pm -ci r2ghidra
+-	r2pm -ci r2ghidra-sleigh
+
+Previa installazione: pip install pwntools
+
+Pwntools (normalmente, basta eseguire lo script o "spawnare" una shell, tale da fare "cat flag.txt")
+    from pwn import *                                             /importa pwntools in uno script
+    
+    payload ="A" * (buffer/offset_size)                            /payload di esempio (deve essere codificato in "ascii")
+    
+    payload = b'java' + b'A'*(28) + target                         /importante codificare in binario le stringhe presenti
+    (oppure)
+    offset = 44 
+    junk = b'A' * offset # 44 bytes of junk
+    
+    payload += stringhe
+    payload = payload.encode("ascii")
+
+    p = process("./file")                                         /processa correttamente un file binario
+    (oppure)
+    context.binary = "./file"
+    p = process()
+
+    io = process(context.binary.path)                             /creiamo un'istanza del processo con cui interagire
+    main = io.unpack()                                            /possiamo prendere un indirizzo da quella funzione, nel qual caso il "main"
+
+    e = ELF("./file")                                             /processa il file come ELF; utile per caricarne i simboli
+    target_address=p64(e.symbols['print_flag'])                   /esempio di utilizzo con ELF
+
+    elf = context.binary                                          /carica una copia del file ELF
+    exit_got=elf.got['exit']                                      /prendiamo l'indirizzo della funzione exit
+    win_addr=elf.symbols['win']                                   /prendiamo l'indirizzo di una funzione presente nel file, in questo caso "win"
+
+    (possiamo vedere ad esempio dove sono gli indirizzi)
+    log.info("Address of 'exit' .got.plt entry: {}".format(hex(exit_got)))
+    log.info("Address of 'win': {}".format(hex(win_addr)))
+
+    (dipende dall'architettura, si controlli con file)
+    - Codifica in little endian degli indirizzi (architettura giusta o il programma non esegue/crasha)
+    address = p32(0x4007a2)                                       /codifica indirizzo a 32 bit
+    address = p64(0x4007a2)                                       /codifica indirizzo a 64 bit
+
+    (Le interazioni da scrivere qui ricalcano quelle del programma)
+    (Es. se chiede di scrivere "yes", inviare un dato, sarà da fare sendline("yes), poi sendline/sendlineafter(payload))
+
+    p.sendline(_msg_)                                             /scrive una stringa nel terminale
+    p.sendlineafter('_str_', _msg_)                               /scrive una stringa nel terminale solo dopo aver letto una certa stringa
+    p.recvuntil(">")                                              /riceve dati finché non arriva al delimitatore ">"
+    p.interactive()                                               /permette di interagire con il terminale
+    (normalmente, occorre mettere un input e si vede la flag, oppure si è spawnata una shell e occorre fare "ls/cat flag.txt" e si vede così la flag)
+    
+    (se stiamo utilizzando io.unpack() possiamo inviare un payload come segue)
+    where = elf.got['read'] #get "read" function address from got
+    what = elf.symbols['oh_look_useful'] #get "oh_look_useful" function address from file symbols
+    io.pack(where)
+    io.pack(what)
+
+    p.recvall()                                                   /salva le stampe del terminale (normale stampa)
+    (oppure)
+    msgout = p.recvall()                                          /salva le stampe del terminale in una variabile e le printa
+    print(msgout)
+    (oppure)
+    print(p.recvall())
+
+    asm(shellcraft.sh())                                          /crea una shell
+    (Esempio di utilizzo) --> (leggo il file e poi) p.sendline(asm(shellcraft.sh()))
+
+ROP
+(Siamo intenzionati a sfruttare dei gadget; questi hanno la sintassi [pop / istruzione / ret])
+
+- ROPgadget
+ROPgadget --binary file | grep "registro"
+
+- ropper (pip install ropper)
+ropper --file file | grep rdi
+
+Shellcode generico
+http://shell-storm.org/shellcode/ per riferimento
+Come si usa:
+Letteralmente, basta eseguire un curl ad una delle varie opzioni presenti sulla pagine e prendere uno shellcode qualsiasi, ad esempio con:
+curl https://shell-storm.org/shellcode/files/shellcode-904.html
+
+Esempio di shellcode (sfrutta le istruzioni macchina presenti per essere così):
+shellcode = b"\x6a\x31\x58\x99\xcd\x80\x89\xc3\x89\xc1\x6a\x46\x58\xcd\x80\xb0\x0b\x52\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x89\xd1\xcd\x80"
+
+IDA
+    F5                                 /visualizza lo pseudocodice della funzione (lo rende leggibile)
+    90 = nop                           /90 in esadecimale corrisponde a un istruzione assembly
+    75 = JNZ                           /Jump if Not Zero
+    74 = JZ                            /Jump if Zero
+    
+Applicare patch in IDA (si consiglia di agire su un file separato da quello originale)
+    Hex View - (seleziono byte) Edit - (modifico) - Apply Changes 
+Per salvare:
+    Edit - Patch Program - Apply patches to input file - Salvare (premere l'icona di floppy)
+
+Ulteriore disassembler (Ghidra):
+
+Installazione di Ghidra per Ubuntu (esempio con una specifica versione)
+-	wget 'https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.0.1_build/ghidra_10.0.1_PUBLIC_20210708.zip'
+-	unzip ghidra_10.0.1_PUBLIC_20210708.zip
+-	sudo apt install default-jdk
+-	Andare nella cartella scaricata (ci vuole un po’), ad esempio scritta come “ghidra_10.0.1_PUBLIC”
+-	Per Linux, eseguire chmod +x ghidraRun - ./ghidraRun
+-	Per Windows, eseguire con doppio clic ghidraRun.bat
+-	Occorre creare un nuovo progetto (usato per importare di volta in volta i file e disassemblarli)
+-	File – New Project – Non shared project – (Inserire un nome) – Finish
+-	Per importare file -> File – Import file – Select file to import
+-	Se il file non venisse importato, ricordarsi di usare esattamente la JDK 11 oppure la JDK 17
