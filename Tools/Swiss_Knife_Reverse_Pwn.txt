@@ -10,7 +10,8 @@ git clone https://github.com/longld/peda.git ~/peda
 echo "source ~/peda/peda.py" >> ~/.gdbinit
 Avviare un programma qualsiasi con gdb e si vede il prompt iniziare con gdb-peda
 
-GDB (con gdb-peda)
+GDB (con gdb-peda) --> gdb -q per avviare in "quiet", quindi senza il prompt verboso iniziale
+
     gdb nomefile                       /per aprire il file
     run                                /per avviare il programma
     breakpoint/b* funzione o indirizzo /imposta il breakpoint in un punto preciso
@@ -25,10 +26,14 @@ GDB (con gdb-peda)
     info variables                     /mostra variabili
     info locals                        /lista variabili locali
     info breakpoints                   /lista tutti i breakpoint
+    info functions
+
     printf "%s", (char *) flag_buf 
     oppure 
     x/s (char *) flag_buf              /stampa una variabile come stringa
-    disassemble bash                   /mostra assembly della funzione
+    
+    disassemble/disas/disass funzione         /mostra assembly della funzione "funzione"
+
     c                                  /continua dopo br
     x/200bx $esp                       /mostra la stack, se non c'è esp usa rsp
     r < a                              /da come input il file a (da usare con cyclic)
@@ -84,8 +89,7 @@ Checksec (controlla livello di sicurezza del file)
     3- CANARY                         /Controllo sul return della funzione chiamata che si accerta che riporti alla funzione precedente
     4- NX                             /Non-Executable La stack non è eseguibile
     5- PIE                            /Position Independent Executable Indirizzi shiftati di uno stesso offset comune
-    
-    Fonti:                             https://blog.siphos.be/2011/07/high-level-explanation-on-some-binary-executable-security/
+    6 - RUNPATH                       /(a volte presente) Path di esecuzione (se impostato per la stessa cartella di lavoro, è come '.')
 
 Installazione di Radare2 Ubuntu aggiornata al 2022:
 -	git clone https://github.com/radareorg/radare2
@@ -99,10 +103,13 @@ Radare2
     aaaa                               /inizializza
     afl                                /mostra indirizzi funzioni e lista tutte le funzioni
     pdf; agf                           /mostra la funzione e mostra un grafico per il control flow
+    pd 10 @ funzione                   /stampa le prime X righe (in questo caso 10) di "funzione"
     px 32                              /stampa dump a 32 byte 
     f~foo                              /filtra le flag come grep 
-    iS;is                              /lista sezioni e simboli
-    iz                                 /stringhe sezione dati
+    iS;is                              /lista Sezioni e simboli
+    iz                                 /stringhe nella sezione "data"
+    ie                                 /Entrypoint del programma
+
     rabin2                             /lista le dipendenze dirette del file 
     pd 1 @ (funzione)                  /stampa indirizzo comando
     s main                             /salta al main
@@ -118,9 +125,18 @@ Radare2
     dr                                 /mostra i registri della CPU
 
     rabin2                             /dà molte informazioni sul file binario
-    (esempio d'uso) -> rabin2 -i file 
+    (esempio d'uso durante esecuzione) -> rabin2 -S file    /stampa sezioni ed info di un file
+    (esempio d'uso prima dell'esecuzione) -> rabin2 -I file    /stampa info generiche sul file
 
+
+    /R pop rdi                         /cerca gli opcode, in questo caso con "pop rdi"
+
+    f~useful                           /cerca tutte le funzioni con "useful"
     q                                  /quit
+
+Porzioni utili da scrivere per la memoria con iS o rabin2:
+"data"
+"bss" (se utile, di solito meglio la prima delle due)
 
 Uso del package manager di Radare2 (es. installazione Ghidra per decompilare il codice in linea)
 -	r2pm update
@@ -194,11 +210,29 @@ Pwntools (normalmente, basta eseguire lo script o "spawnare" una shell, tale da 
 ROP
 (Siamo intenzionati a sfruttare dei gadget; questi hanno la sintassi [pop / istruzione / ret])
 
+X64 calling conventions per i registri:
+RDI, RSI, RDX, RCX, R8, R9
+
 - ROPgadget
 ROPgadget --binary file | grep "registro"
+ROPgadget --binary binaryfile --ropchain (per sapere dove scrivere e come)
 
 - ropper (pip install ropper)
 ropper --file file | grep rdi
+ropper -f binario --search "mov [r13], r12" (per cercare uno specifico gadget)
+ropper --file binario --stack-pivot         (per cercare gadget per lo stack pointer)
+
+
+#Return to Libc attack
+https://github.com/niklasb/libc-database 
+--> Find dynamically the address in system related to functions and archs,
+download one file related and with that, we execute an exploit then ROP it
+
+(Code example)
+libc = ELF(file_libc)
+libc.address = puts - libc.symbols["puts"]
+rop = ROP(libc)
+rop.call(libc.symbols["system"], [libc.search(b"/bin/sh\x80")])
 
 Shellcode generico
 http://shell-storm.org/shellcode/ per riferimento
@@ -233,3 +267,6 @@ Installazione di Ghidra per Ubuntu (esempio con una specifica versione)
 -	File – New Project – Non shared project – (Inserire un nome) – Finish
 -	Per importare file -> File – Import file – Select file to import
 -	Se il file non venisse importato, ricordarsi di usare esattamente la JDK 11 oppure la JDK 17
+
+Librerie dinamiche caricate:
+ldd binario
