@@ -267,7 +267,9 @@ GDB (con gdb-peda) --> gdb -q per avviare in "quiet", quindi senza il prompt ver
 
     set disassemble-next-line on       /mostra sempre il disassembly per la linea di codice che sta per essere eseguita
     n                                  /mette un breakpoint "n" linee sotto alla corrente in esecuzione 
-    si                                 /step in; avanza l'esecuzione di un passo 
+    si                                 /step in; avanza l'esecuzione di un passo
+
+    set follow-fork-mode child         /attacca il debugger ai processi figli 
 
     print (p) (variabile)              /stampa contenuti variabile
     q                                  /necessario per uscire dal debugger
@@ -277,7 +279,7 @@ Comandi utili
     file nome                          /mostra architettura (Ex:intel 80386) 
     pwn cyclic 100 > a                 /crea un pattern lungo 100 dentro al file a
     objdump -d file                    /mostra tutto il dump del codice
-    ltrace -f file                     /mostra chiamate di sistema
+    ltrace -f file                     /mostra chiamate di sistema (con -f fa vedere anche i processi figli)
     strace -f file                     /alternativo al precedente con stesso scopo
     grep -r --text 'picoCTF{.*}'       /trovare testo ricorsivamente
     egrep -r --text 'picoCTF{.*?}      /alternativo al precedente con stesso scopo ma vede anche regex (espressioni regolari)
@@ -524,7 +526,6 @@ che abbiamo x86-32.
 La ROP Chain esegue esattamente nell'ordine composto, che è quindi fondamentale.
 
 
-
 - ropper (pip install ropper)
 ropper --file file | grep rdi
 ropper -f binario --search "mov [r13], r12" (per cercare uno specifico gadget)
@@ -600,3 +601,6 @@ https://github.com/apsdehal/aWEsoMe-cTf
 https://github.com/JohnHammond/ctf-katana
 https://dvd848.github.io/CTFs/CheatSheet.html
 https://github.com/Rajchowdhury420/CTF-CheatSheet
+
+https://www.rapidtables.com/convert/number/hex-to-ascii.html
+http://www.brescianet.com/appunti/vari/tabellaascii/ascii.htm 
