@@ -159,17 +159,41 @@ movq %rbp, %rsp     # Reset stack pointer and restore base
                     # pointer
 popq %rbp ret
 
-Stack a 32 bit:
+- Stack a 32 bit:
 ● Indirizzo di ritorno (4 byte); 
 ● Puntatore di base (4 byte); 
 ● Dati 
 
-Stack a 64 bit:
+- Stack a 64 bit:
 ● Indirizzo di ritorno (8 byte); 
 ● Puntatore di base (8 byte); 
 ● Dati 
 
-IDA
+- The Stack
+In computer architecture, the stack is a hardware manifestation 
+of the stack data structure (a Last In, First Out queue).
+
+In x86, the stack is simply an area in RAM that 
+was chosen to be the stack - there is no special hardware to store stack contents. 
+The esp/rsp register holds the address in memory where the bottom of 
+the stack resides. 
+When something is pushed to the stack, 
+esp decrements by 4 (or 8 on 64-bit x86), and the value that was 
+pushed is stored at that location in memory. Likewise, when a pop instruction is executed, 
+the value at esp is retrieved (i.e. esp is dereferenced), and esp is then incremented by 4 (or 8).
+
+N.B. The stack "grows" down to lower memory addresses!
+
+Conventionally, ebp/rbp contains the address of the top of the current stack frame, and so sometimes local variables are referenced as an offset relative to ebp rather than an offset to esp. A stack frame is essentially just the space used on the stack by a given function.
+
+Uses
+The stack is primarily used for a few things:
+
+Storing function arguments
+Storing local variables
+Storing processor state between function calls
+
+- IDA
     F5                                 /visualizza lo pseudocodice della funzione (lo rende leggibile)
     90 = nop                           /90 in esadecimale corrisponde a un istruzione assembly
     75 = JNZ                           /Jump if Not Zero
@@ -179,6 +203,16 @@ Applicare patch in IDA (si consiglia di agire su un file separato da quello orig
     Hex View - (seleziono byte) Edit - (modifico) - Apply Changes 
 Per salvare:
     Edit - Patch Program - Apply patches to input file - Salvare (premere l'icona di floppy)
+
+In IDA nella graph view all'inizio di una funzione ci sono delle etichette (es. "var1, var2")
+con a fianco un numero negativo in hex (es. -10h, -18h). 
+Questi nomi vengono generati da IDA e i relativi numeri vengono usati 
+come offset per indicare dove iniziano quelle variabili:
+se ad esempio leggi all'inizio "var1 = -10h" e nelle righe successive 
+trovi scritto [rbp+var1] in realtà l'istruzione sta indicando la variabile 
+che inizia a [rbp-16]
+perché in x86-64 gli offset delle variabili locali rispetto all'indirizzo 
+in rbp sono per definizione negativi (sono più vicine alla cima dello stack)
 
 Vuknerabilità in C (buffer overflow):
 -scanf
@@ -236,7 +270,7 @@ GDB (con gdb-peda) --> gdb -q per avviare in "quiet", quindi senza il prompt ver
     oppure 
     x/s (char *) flag_buf              /stampa una variabile come stringa
     
-    disassemble/disas/disass funzione         /mostra assembly della funzione "funzione"
+    disassemble/disas/disass funzione  /mostra assembly della funzione "funzione"
 
     c                                  /continua dopo br
     x/200bx $esp                       /mostra la stack, se non c'è esp usa rsp
@@ -262,6 +296,8 @@ GDB (con gdb-peda) --> gdb -q per avviare in "quiet", quindi senza il prompt ver
     References to pattern buffer found at:
     (stack)"
 
+    pattern offset $eip                /per avere subito un'idea dell'offset da avere
+
     shellcode generate                 /genera una serie di opzioni per la shellcode
     (esempio di utilizzo)
     shellcode generate x86/linux exec
@@ -269,6 +305,8 @@ GDB (con gdb-peda) --> gdb -q per avviare in "quiet", quindi senza il prompt ver
     set disassemble-next-line on       /mostra sempre il disassembly per la linea di codice che sta per essere eseguita
     n                                  /mette un breakpoint "n" linee sotto alla corrente in esecuzione 
     si                                 /step in; avanza l'esecuzione di un passo
+
+    bt                                 /backtrace - permette di vedere il call stack corrente, sapendo dove ritornano le funzioni
 
     set follow-fork-mode child         /attacca il debugger ai processi figli 
 
@@ -305,9 +343,9 @@ e il primo argomento di questa è di solito la funzione principale.
 che molto probabilmente è la funzione main. Suggerisco di compilare da soli alcuni binari e di osservare come IDA/Ghidra genera lo pseudocodice. Questo sarà molto utile per capire.
 
 Checksec (controlla livello di sicurezza del file)
-    checksec --file=./binario
+    "checksec --file=./binario" oppure "checksec file"
 
-    pwn checksec nomefile              /simile al comando file ma da piu dettagli sull' eseguibile
+    pwn checksec nomefile             /simile al comando file ma da piu dettagli sull' eseguibile
     -Outputs di Checksec
     1- Architettura file
     2- RELRO                          /Relocation Read-Only (tecnica di mitigazione sui file binari)
@@ -316,7 +354,7 @@ Checksec (controlla livello di sicurezza del file)
     3- CANARY                         /Controllo sul return della funzione chiamata che si accerta che riporti alla funzione precedente.
     (Un canary è un valore scritto proprio prima della funzione; se si usa un BO, allora il canary sarà riscritto
     e l'overflow viene localizzato subito)
-    4- NX                             /Non-Executable La stack non è eseguibile
+    4- NX                             /Non-Executable La stack non è eseguibile (non si può eseguire shellcode sullo stack)
     5- PIE                            /Position Independent Executable Indirizzi shiftati di uno stesso offset comune
 
     Si noti che, controllando la sicurezza del file con "checksec", 
@@ -335,8 +373,6 @@ ASLR Address Space Layout Randomization:
 - Randomizes stack, heap, libc and makes it harder to find important locations (es. libc)
 Solution:
 Use a non executable stack coupled with ASLR. Use libc attacks
-
-
 
 Installazione di Radare2 Ubuntu aggiornata al 2022:
 -	git clone https://github.com/radareorg/radare2
@@ -402,7 +438,6 @@ Radare2
     
     q                                  /quit
 
-
 Sezioni scrivili di memoria: (utile prenderne gli indirizzi ed usarli in modo opportuno)
 "data"
 "bss" (se utile, di solito meglio la prima delle due)
@@ -457,7 +492,7 @@ per codificare in binario ciò che serve.
     address = p64(0x4007a2)                                       /codifica indirizzo a 64 bit
 
     (Le interazioni da scrivere qui ricalcano quelle del programma)
-    (Es. se chiede di scrivere "yes", inviare un dato, sarà da fare sendline("yes), poi sendline/sendlineafter(payload))
+    (Es. se chiede di scrivere "yes", inviare un dato, sarà da fare sendline("yes"), poi sendline/sendlineafter(payload))
 
     p.sendline(_msg_)                                             /scrive una stringa nel terminale
 
@@ -543,7 +578,7 @@ and contains the address of the data that would be removed from the stack
 EBP base pointer --> points to higher memory address at the bottom of the stack
 ESI source index
 EDI destination index
-EAX accumulator
+EAX accumulator (return value always in assembly)
 EBX base
 ECX counter
 EDX data
@@ -626,6 +661,12 @@ Come si usa:
 Letteralmente, basta eseguire un curl ad una delle varie opzioni presenti sulla pagine e prendere uno shellcode qualsiasi, ad esempio con:
 curl https://shell-storm.org/shellcode/files/shellcode-904.html
 
+Negli "shellcode" è importante valutare dove inizia la substring del pattern 
+da te creato che è contenuta in RIP, una volta che il programma è andato in crash
+Così sai la distanza in bytes che nello stack separa l'inizio del 
+buffer e il saved RIP a cui si farà return (facendone il pop e caricandolo in RIP, 
+ossia il program counter)
+
 Altro esempio: shellcode per ("bin/sh"):
 http://shell-storm.org/shellcode/files/shellcode-811.php
 
@@ -671,6 +712,9 @@ https://web.stanford.edu/class/cs107/resources/x86-64-reference.pdf
 https://www.felixcloutier.com/x86/
 https://zestedesavoir.com/articles/pdf/158/ecrivez-votre-premier-shellcode-en-asm-x86.pdf
 
+Radare2:
+https://book.rada.re/
+
 Riferimenti tools ottimi:
 https://github.com/apsdehal/aWEsoMe-cTf
 https://github.com/JohnHammond/ctf-katana
@@ -678,4 +722,10 @@ https://dvd848.github.io/CTFs/CheatSheet.html
 https://github.com/Rajchowdhury420/CTF-CheatSheet
 
 https://www.rapidtables.com/convert/number/hex-to-ascii.html
-http://www.brescianet.com/appunti/vari/tabellaascii/ascii.htm 
+http://www.brescianet.com/appunti/vari/tabellaascii/ascii.htm
+
+IDA Offset:
+https://books.google.it/books?id=5p7VAwAAQBAJ&pg=PA337&lpg=PA337&dq=ida+offset+var&source=bl&ots=uyu2Nh8trp&sig=ACfU3U32vriGuBWgDiMtBeRGLMl9Un2gkQ&hl=it&sa=X&ved=2ahUKEwiJms7Z4sL8AhUA87sIHQHhDvUQ6AF6BAgYEAM#v=onepage&q=ida%20offset%20var&f=false
+
+Stack:
+https://ctf101.org/binary-exploitation/what-is-the-stack/ 
